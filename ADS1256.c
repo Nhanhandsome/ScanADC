@@ -115,14 +115,14 @@ Info:
 ******************************************************************************/
 static void ADS1256_WaitDRDY(void)
 {   
-//    double i = 0;
-//    for(i=0;i<4000000;i++){
-//        if(gpio_pin_read(GPIO_FILE,DEV_DRDY_PIN) == 0)
-//            break;
-//    }
-//    if(i >= 4000000){
-//       printf("Time Out ...\r\n");
-//    }
+    double i = 0;
+    for(i=0;i<4000000;i++){
+        if(gpio_pin_read(GPIO_FILE,DEV_DRDY_PIN) == 0)
+            break;
+    }
+    if(i >= 4000000){
+       //printfTime Out ...\r\n");
+    }
 }
 
 /******************************************************************************
@@ -222,10 +222,10 @@ uint8_t ADS1256_init(void)
 {
     ADS1256_reset();
     if(ADS1256_ReadChipID() == 3){
-        printf("ID Read success \r\n");
+        //printfID Read success \r\n");
     }
     else{
-        printf("ID Read failed \r\n");
+        //printfID Read failed \r\n");
         return 1;
     }
     ADS1256_ConfigADC(ADS1256_GAIN_1, ADS1256_30000SPS);
@@ -273,6 +273,7 @@ Info:
 uint32_t ADS1256_GetChannalValue(uint8_t Channel)
 {
 	uint32_t Value = 0;
+	//printfGet Data channel %d\n",Channel);
     while(gpio_pin_read(GPIO_FILE,DEV_DRDY_PIN) == 1);
     if(ScanMode == 0){// 0  Single-ended input  8 channel1 Differential input  4 channe 
         if(Channel>=8){
@@ -324,6 +325,7 @@ static void* write_file_handle(void *arg);
 
 static void* adc_scan_thread(void* argp){
 	uint32_t adc_value[8];
+	remove("adc_log.txt");
 	while(1){
 		ADS1256_GetAll(adc_value);
 		for(uint16_t i = 0;i<MAX_CHANNEL;i++){
@@ -356,7 +358,7 @@ void ADS125x_Start_thread(void){
 	for(uint16_t i = 0;i<MAX_CHANNEL;i++){
 		ringbuff_init(&ringbuffer[i], ADC_value[i], MAX_SAMPLE);
 	}
-	printf("Create Scan Thread\n");
+	//printfCreate Scan Thread\n");
     pthread_create((pthread_t *)&thread_id, NULL, adc_scan_thread, NULL);
     pthread_join(thread_id, NULL);
 }
